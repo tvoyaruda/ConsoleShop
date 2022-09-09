@@ -41,10 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseOperations.cs" />
+    <Compile Include="AdminOperations.cs" />
     <Compile Include="CustomerOperations.cs" />
     <Compile Include="GuestOperations.cs" />
     <Compile Include="IOperation.cs" />
-    <Compile Include="Menu.cs" />
+    <Compile Include="OperationsForAccount.cs" />
+    <Compile Include="State.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

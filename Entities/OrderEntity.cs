@@ -20,9 +20,13 @@ namespace Entities
     public class OrderEntity
     {
         public int Id { get; set; }
-        public UserEntity Customer { get; set; }
+        public AccountEntity Customer { get; set; }
         public DateTime CreatedTime { get; set; }
         public ProductEntity Product { get; set; }
         public OrderState State { get; set; }
+        public override string ToString()
+        {
+            return $"{Id} - {Product.Name} - {Product.Price} - {State}";
+        }
     }
 }

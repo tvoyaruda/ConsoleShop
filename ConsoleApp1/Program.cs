@@ -10,10 +10,8 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-            Menu m = new Menu();
+            State m = new State();
             m.Run();
-            Console.ReadLine();
         }
     }
 }

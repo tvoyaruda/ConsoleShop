@@ -10,16 +10,9 @@ namespace BLL
 {
     public abstract class BaseService
     {
-        protected IDataContex Contex { get; }
-        
-        protected BaseService(IDataContex contex)
+        public IEnumerable<ProductEntity> SearchbyName(string name, IDataContex contex)
         {
-            Contex = contex;
-        }
-
-        public IEnumerable<ProductEntity> SearchbyName(string name)
-        {
-            return Contex.Products.Where(p => p.Name.Contains(name)).Select(p => p);
+            return contex.Products.Where(p => p.Name.ToLower().Contains(name.ToLower())).Select(p => p);
         }
     }
 }

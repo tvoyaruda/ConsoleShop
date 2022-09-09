@@ -12,6 +12,7 @@ namespace PL
 {
     public interface IOperations
     {
-        bool ShowAvalibleOperations(AccountEntity account);
+        void SetUser(AccountEntity user);
+        bool ShowAvalibleOperations(IDataContex dataContex, ref IOperations operations);
     }
 }

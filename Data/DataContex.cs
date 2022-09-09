@@ -24,8 +24,8 @@ namespace Data
                     Name = "Adam",
                     Surname = "Rokich",
                     DateOfBirth = new DateTime(1994,7,1),
-                    Email = "user1@gmail.com",
-                    Password = "user1"
+                    Email = "1", //"user1@gmail.com"
+                    Password = "1" //"user1"
                 },
                 new UserEntity
                 {
@@ -93,6 +93,15 @@ namespace Data
                     DateOfBirth = new DateTime(1999,5,15),
                     Email = "admin2@gmail.com",
                     Password = "admin2"
+                },
+                new AdminEntity
+                {
+                    Id = 3,
+                    Name = "Test",
+                    Surname = "Test",
+                    DateOfBirth = new DateTime(1999,5,15),
+                    Email = "a1",
+                    Password = "a1"
                 }
             };
 

@@ -10,36 +10,60 @@ namespace BLL
 {
     public class CustomerService: BaseService
     {
-        public CustomerService(IDataContex contex) : base(contex) 
+        private int nextId = -1;
+
+        public IEnumerable<ProductEntity> ListOfProduct(IDataContex contex) => contex.Products;
+
+        public bool CreateOrder(AccountEntity currentCustomer, int productId, IDataContex contex)
         {
-            nextId = this.Contex.Orders.LastOrDefault().Id + 1;
-        }
-
-        private int nextId;
-
-        public IEnumerable<ProductEntity> ListOfProduct => this.Contex.Products;
-
-        public bool CreateOrder(UserEntity currentCustomer, int productId)
-        {
-            ProductEntity product = this.Contex.Products.Find(p => p.Id == productId);
+            ProductEntity product = contex.Products.Find(p => p.Id == productId);
             if (product == null)
                 return false;
+            if(nextId < 0)
+                nextId = contex.Orders.LastOrDefault().Id + 1;
             OrderEntity order = new OrderEntity()
             {
                 Id = nextId,
                 State = OrderState.New,
                 Product = product,
                 Customer = currentCustomer
-            };       
-            this.Contex.Orders.Add(order);
+            };
+            contex.Orders.Add(order);
             nextId++;
             return true;
         }
 
-        public IEnumerable<OrderEntity> ViewOrders(int customerId) =>
-            this.Contex.Orders.Where(o => o.Customer.Id == customerId).Select(o => o);
+        public IEnumerable<OrderEntity> ViewOrders(int customerId, IDataContex contex) =>
+            contex.Orders.Where(o => o.Customer.Id == customerId).Select(o => o);
 
-        public void CancelOrder(OrderEntity order) =>
-            this.Contex.Orders.Find(o => o.Id == order.Id).State = OrderState.CanceledByUser;
+        public bool CancelOrder(int orderId, IDataContex contex)
+        {
+            OrderEntity changeOrder = contex.Orders.Find(o => o.Id == orderId);
+            if(changeOrder.State == OrderState.New)
+            {
+                changeOrder.State = OrderState.CanceledByUser;
+                return true;
+            }
+            return false;
+        }
+
+        public bool ReceivedOrder(int orderId, IDataContex contex)
+        {
+            OrderEntity changeOrder = contex.Orders.Find(o => o.Id == orderId);
+            if (changeOrder.State != OrderState.CanceledByUser && changeOrder.State != OrderState.CanceledByAdmin)
+            {
+                changeOrder.State = OrderState.Received;
+                return true;
+            }
+            return false;
+        }
+
+        public bool ChangeUserInfo(AccountEntity user, IDataContex contex)
+        {
+            if (contex.Customers.Find(c => c.Id == user.Id) == null)
+                return false;
+            contex.Customers.FindLast(c => c.Id == user.Id).Update(user);
+            return true;
+        }
     }
 }
