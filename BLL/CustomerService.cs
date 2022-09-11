@@ -14,19 +14,20 @@ namespace BLL
 
         public IEnumerable<ProductEntity> ListOfProduct(IDataContext context) => context.Products;
 
-        public bool CreateOrder(AccountEntity currentCustomer, int productId, IDataContext context)
+        public bool CreateOrder(int customerId, int productId, IDataContext context)
         {
+            UserEntity user = context.Customers.Find(c => c.Id == customerId);
             ProductEntity product = context.Products.Find(p => p.Id == productId);
-            if (product == null)
+            if (product == null || user == null)
                 return false;
-            if(nextId < 0)
-                nextId = context.Orders.LastOrDefault().Id + 1;
+            if (nextId < 0)
+                nextId = context.Orders.Count() > 0 ? context.Orders.Last().Id + 1 : 1;
             OrderEntity order = new OrderEntity()
             {
                 Id = nextId,
                 State = OrderState.New,
                 Product = product,
-                Customer = currentCustomer
+                Customer = user
             };
             context.Orders.Add(order);
             nextId++;
@@ -34,7 +35,7 @@ namespace BLL
         }
 
         public IEnumerable<OrderEntity> ViewOrders(int customerId, IDataContext context) =>
-            context.Orders.Where(o => o.Customer.Id == customerId).Select(o => o);
+            context.Orders?.Where(o => o.Customer.Id == customerId).Select(o => o);
 
         public bool CancelOrder(int orderId, IDataContext context)
         {
@@ -47,10 +48,12 @@ namespace BLL
             return false;
         }
 
-        public bool ReceivedOrder(int orderId, IDataContext context)
+        public bool ReceivedOrder(int orderId, int userId, IDataContext context)
         {
-            OrderEntity changeOrder = context.Orders.Find(o => o.Id == orderId);
-            if (changeOrder.State != OrderState.CanceledByUser && changeOrder.State != OrderState.CanceledByAdmin)
+            OrderEntity changeOrder = context.Orders?.Find(o => o.Id == orderId);
+            if(changeOrder == null)
+                return false;
+            if (changeOrder.Customer.Id == userId && changeOrder.State != OrderState.CanceledByUser && changeOrder.State != OrderState.CanceledByAdmin)
             {
                 changeOrder.State = OrderState.Received;
                 return true;
@@ -62,7 +65,7 @@ namespace BLL
         {
             if (context.Customers.Find(c => c.Id == user.Id) == null)
                 return false;
-            context.Customers.FindLast(c => c.Id == user.Id).Update(user);
+            context.Customers.Find(c => c.Id == user.Id).Update(user);
             return true;
         }
     }

@@ -4,7 +4,7 @@ using Entities;
 using BLL;
 using PL;
 
-namespace ConsoleApp1
+namespace ConsoleShop
 {
     class Program
     {

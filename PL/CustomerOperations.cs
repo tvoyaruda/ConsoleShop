@@ -76,7 +76,7 @@ namespace PL
         private IOperations LogOut()
         {
             currentUser = null;
-            return OperationsForAccount.GetOperations(currentUser?.GetType().Name);
+            return OperationsSelector.GetOperations(currentUser?.GetType().Name);
         }
 
         private void CreateNewOrder(IDataContext dataContext)
@@ -84,7 +84,7 @@ namespace PL
             ShowProducts(dataContext);
             Console.WriteLine("Enter product id");
             int prodId = int.Parse(Console.ReadLine());
-            if(_userService.CreateOrder(currentUser, prodId, dataContext))
+            if(_userService.CreateOrder(currentUser.Id, prodId, dataContext))
             {
                 Console.WriteLine("Order created!");
                 ShowOrders(dataContext);
@@ -119,7 +119,7 @@ namespace PL
             ShowOrders(dataContext);
             Console.WriteLine("Enter order id to receive it");
             int orderId = int.Parse(Console.ReadLine());
-            if (_userService.ReceivedOrder(orderId, dataContext))
+            if (_userService.ReceivedOrder(orderId, currentUser.Id, dataContext))
             {
                 Console.WriteLine("Order received!");
                 ShowOrders(dataContext);

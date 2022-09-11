@@ -10,7 +10,7 @@ using PL;
 
 namespace PL
 {
-    public static class OperationsForAccount
+    public static class OperationsSelector
     {
         private static Dictionary<string, IOperations> keyValuePairs = new Dictionary<string, IOperations>
         {

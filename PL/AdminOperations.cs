@@ -97,7 +97,7 @@ namespace PL
         private IOperations LogOut()
         {
             currentUser = null;
-            return OperationsForAccount.GetOperations(currentUser?.GetType().Name);
+            return OperationsSelector.GetOperations(currentUser?.GetType().Name);
         }
 
         private void CreateNewOrder(IDataContext dataContext)

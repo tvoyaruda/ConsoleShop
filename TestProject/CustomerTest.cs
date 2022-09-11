@@ -9,6 +9,7 @@ using Entities;
 using Moq;
 using PL;
 using NSubstitute;
+using Xunit;
 
 namespace TestProject
 {
@@ -21,10 +22,19 @@ namespace TestProject
             customerService = new CustomerService();
         }
 
-        public void Task()
+        public void CreateOrder_ShouldReturnTrue_WhenOrderHaveExistsProductId()
         {
+            //Arrange
             var context = Substitute.For<IDataContext>();
-            context.Products.Returns(new List<ProductEntity>());
+            context.Orders.Returns(new List<OrderEntity>());
+            UserEntity user = new UserEntity();
+            var productId = int.Parse(Guid.NewGuid().ToString());
+            //Act
+
+            var result = customerService.CreateOrder(user, productId, context);
+            //Assert
+
+            Assert.True(result);
         }
     }
 }
