@@ -8,7 +8,7 @@ using Entities;
 using BLL;
 using NSubstitute;
 
-namespace TestProject1
+namespace TestProject
 {
     [TestClass]
     public class CustomerServiceUnitTest
