@@ -18,7 +18,7 @@ namespace PL
             _userService = new GuestService();
         }
 
-        public override bool ShowAvalibleOperations(IDataContex dataContex,ref IOperations operations)
+        public override bool ShowAvalibleOperations(IDataContext dataContext,ref IOperations operations)
         {
             Console.WriteLine("\n\nGuest");
             Console.WriteLine($"Enter 0 for exit");
@@ -30,13 +30,13 @@ namespace PL
                 case 0:
                     return false;
                 case 1:
-                    operations = SignUp(dataContex);
+                    operations = SignUp(dataContext);
                     break;
                 case 2:
-                    FindProduct(dataContex);
+                    FindProduct(dataContext);
                     break;
                 case 3:
-                    operations = LogIn(dataContex);
+                    operations = LogIn(dataContext);
                     break;
                 default:
                     break;
@@ -44,7 +44,7 @@ namespace PL
             return true;
         }
 
-        private IOperations SignUp(IDataContex dataContex)
+        private IOperations SignUp(IDataContext dataContext)
         {
             Console.WriteLine("Input your email");
             string email = Console.ReadLine();
@@ -70,7 +70,7 @@ namespace PL
                 Password = password
             };
 
-            if (_userService.RegisterNewAccount(newUser, dataContex))
+            if (_userService.RegisterNewAccount(newUser, dataContext))
             {
                 Console.WriteLine("User added!");
                 currentUser = newUser;
@@ -85,13 +85,13 @@ namespace PL
             return newOperations;
         }
 
-        private IOperations LogIn(IDataContex dataContex)
+        private IOperations LogIn(IDataContext dataContext)
         {
             Console.WriteLine("Input your email");
             string email = Console.ReadLine();
             Console.WriteLine("Input your password");
             string password = Console.ReadLine();
-            currentUser = _userService.LogIn(email, password, dataContex);
+            currentUser = _userService.LogIn(email, password, dataContext);
             IOperations newOperations = OperationsForAccount.GetOperations(currentUser?.GetType().Name);
             newOperations.SetUser(currentUser);
             return newOperations;

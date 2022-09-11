@@ -46,7 +46,7 @@
     <Compile Include="CustomerOperations.cs" />
     <Compile Include="GuestOperations.cs" />
     <Compile Include="IOperation.cs" />
-    <Compile Include="OperationsForAccount.cs" />
+    <Compile Include="OperationsFactory.cs" />
     <Compile Include="State.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace Data
 {
-    public class DataContex : IDataContex
+    public class DataContext : IDataContext
     {
         public List<UserEntity> Customers { get; }
         public List<AdminEntity> Admins { get; }
         public List<OrderEntity> Orders { get; }
         public List<ProductEntity> Products { get; }
 
-        public DataContex()
+        public DataContext()
         {
             Customers = new List<UserEntity>
             {

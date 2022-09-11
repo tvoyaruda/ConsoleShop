@@ -13,6 +13,6 @@ namespace PL
     public interface IOperations
     {
         void SetUser(AccountEntity user);
-        bool ShowAvalibleOperations(IDataContex dataContex, ref IOperations operations);
+        bool ShowAvalibleOperations(IDataContext dataContext, ref IOperations operations);
     }
 }

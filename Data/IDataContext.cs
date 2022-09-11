@@ -7,7 +7,7 @@ using Entities;
 
 namespace Data
 {
-    public interface IDataContex
+    public interface IDataContext
     {
         List<UserEntity> Customers { get; }
         List<AdminEntity> Admins { get; }

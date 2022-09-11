@@ -9,14 +9,14 @@ using BLL;
 
 namespace PL
 {
-    class CustomerOperations : BaseOperations<CustomerService>
+    public class CustomerOperations : BaseOperations<CustomerService>
     {
         public CustomerOperations() : base() 
         {
             _userService = new CustomerService();
         }
 
-        public override bool ShowAvalibleOperations(IDataContex dataContex, ref IOperations operations)
+        public override bool ShowAvalibleOperations(IDataContext dataContext, ref IOperations operations)
         {
 
             Console.WriteLine("\n\nCustomer");
@@ -35,25 +35,25 @@ namespace PL
                 case 0:
                     return false;
                 case 1:
-                    ShowProducts(dataContex);
+                    ShowProducts(dataContext);
                     break;
                 case 2:
-                    FindProduct(dataContex);
+                    FindProduct(dataContext);
                     break;
                 case 3:
-                    ShowOrders(dataContex);
+                    ShowOrders(dataContext);
                     break;
                 case 4:
-                    CreateNewOrder(dataContex);
+                    CreateNewOrder(dataContext);
                     break;
                 case 5:
-                    CancelOrder(dataContex);
+                    CancelOrder(dataContext);
                     break;
                 case 6:
-                    ReceivedOrder(dataContex);
+                    ReceivedOrder(dataContext);
                     break;
                 case 7:
-                    ChangeInfo(dataContex);
+                    ChangeInfo(dataContext);
                     break;
                 case 8:
                     operations = LogOut();
@@ -64,10 +64,10 @@ namespace PL
             return true;
         }
 
-        private void ShowOrders(IDataContex dataContex)
+        private void ShowOrders(IDataContext dataContext)
         {
             Console.WriteLine("Your orders:");
-            foreach (var o in _userService.ViewOrders(currentUser.Id, dataContex))
+            foreach (var o in _userService.ViewOrders(currentUser.Id, dataContext))
             {
                 Console.WriteLine(o);
             }
@@ -79,56 +79,56 @@ namespace PL
             return OperationsForAccount.GetOperations(currentUser?.GetType().Name);
         }
 
-        private void CreateNewOrder(IDataContex dataContex)
+        private void CreateNewOrder(IDataContext dataContext)
         {
-            ShowProducts(dataContex);
+            ShowProducts(dataContext);
             Console.WriteLine("Enter product id");
             int prodId = int.Parse(Console.ReadLine());
-            if(_userService.CreateOrder(currentUser, prodId, dataContex))
+            if(_userService.CreateOrder(currentUser, prodId, dataContext))
             {
                 Console.WriteLine("Order created!");
-                ShowOrders(dataContex);
+                ShowOrders(dataContext);
             }
             else
                 Console.WriteLine("Wrong product id! Try to order again");
         }
 
-        private void ShowProducts(IDataContex dataContex)
+        private void ShowProducts(IDataContext dataContext)
         {
-            foreach (var p in _userService.ListOfProduct(dataContex))
+            foreach (var p in _userService.ListOfProduct(dataContext))
                 Console.WriteLine(p);
         }
 
 
-        private void CancelOrder(IDataContex dataContex)
+        private void CancelOrder(IDataContext dataContext)
         {
-            ShowOrders(dataContex);
+            ShowOrders(dataContext);
             Console.WriteLine("Enter order id to cancel it");
             int orderId = int.Parse(Console.ReadLine());
-            if (_userService.CancelOrder(orderId, dataContex))
+            if (_userService.CancelOrder(orderId, dataContext))
             {
                 Console.WriteLine("Order canceled!");
-                ShowOrders(dataContex);
+                ShowOrders(dataContext);
             }
             else
                 Console.WriteLine("This order can't be canceled");
         }
 
-        private void ReceivedOrder(IDataContex dataContex)
+        private void ReceivedOrder(IDataContext dataContext)
         {
-            ShowOrders(dataContex);
+            ShowOrders(dataContext);
             Console.WriteLine("Enter order id to receive it");
             int orderId = int.Parse(Console.ReadLine());
-            if (_userService.ReceivedOrder(orderId, dataContex))
+            if (_userService.ReceivedOrder(orderId, dataContext))
             {
                 Console.WriteLine("Order received!");
-                ShowOrders(dataContex);
+                ShowOrders(dataContext);
             }
             else
                 Console.WriteLine("This order can't be received");
         }
 
-        private void ChangeInfo(IDataContex dataContex)
+        private void ChangeInfo(IDataContext dataContext)
         {
             Console.WriteLine("Your actual information:");
             Console.WriteLine($"1. Name: {currentUser.Name}");
@@ -163,7 +163,7 @@ namespace PL
                 default:
                     break;
             }
-            if(_userService.ChangeUserInfo(currentUser, dataContex))
+            if(_userService.ChangeUserInfo(currentUser, dataContext))
                 Console.WriteLine("Change saved!");
             else
                 Console.WriteLine("Some problem. Try again");

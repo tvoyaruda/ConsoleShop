@@ -14,18 +14,18 @@ namespace PL
     {
         protected T _userService;
         protected AccountEntity currentUser;
-        public abstract bool ShowAvalibleOperations(IDataContex dataContex, ref IOperations operations);
+        public abstract bool ShowAvalibleOperations(IDataContext dataContext, ref IOperations operations);
 
         public void SetUser(AccountEntity user)
         {
             currentUser = user;
         }
 
-        protected void FindProduct(IDataContex dataContex)
+        protected void FindProduct(IDataContext dataContext)
         {
             Console.WriteLine("Input name of product");
             string name = Console.ReadLine();
-            foreach (var p in _userService.SearchbyName(name, dataContex))
+            foreach (var p in _userService.SearchbyName(name, dataContext))
             {
                 Console.WriteLine(p);
             }

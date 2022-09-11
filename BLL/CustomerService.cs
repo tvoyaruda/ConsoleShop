@@ -12,15 +12,15 @@ namespace BLL
     {
         private int nextId = -1;
 
-        public IEnumerable<ProductEntity> ListOfProduct(IDataContex contex) => contex.Products;
+        public IEnumerable<ProductEntity> ListOfProduct(IDataContext context) => context.Products;
 
-        public bool CreateOrder(AccountEntity currentCustomer, int productId, IDataContex contex)
+        public bool CreateOrder(AccountEntity currentCustomer, int productId, IDataContext context)
         {
-            ProductEntity product = contex.Products.Find(p => p.Id == productId);
+            ProductEntity product = context.Products.Find(p => p.Id == productId);
             if (product == null)
                 return false;
             if(nextId < 0)
-                nextId = contex.Orders.LastOrDefault().Id + 1;
+                nextId = context.Orders.LastOrDefault().Id + 1;
             OrderEntity order = new OrderEntity()
             {
                 Id = nextId,
@@ -28,17 +28,17 @@ namespace BLL
                 Product = product,
                 Customer = currentCustomer
             };
-            contex.Orders.Add(order);
+            context.Orders.Add(order);
             nextId++;
             return true;
         }
 
-        public IEnumerable<OrderEntity> ViewOrders(int customerId, IDataContex contex) =>
-            contex.Orders.Where(o => o.Customer.Id == customerId).Select(o => o);
+        public IEnumerable<OrderEntity> ViewOrders(int customerId, IDataContext context) =>
+            context.Orders.Where(o => o.Customer.Id == customerId).Select(o => o);
 
-        public bool CancelOrder(int orderId, IDataContex contex)
+        public bool CancelOrder(int orderId, IDataContext context)
         {
-            OrderEntity changeOrder = contex.Orders.Find(o => o.Id == orderId);
+            OrderEntity changeOrder = context.Orders.Find(o => o.Id == orderId);
             if(changeOrder.State == OrderState.New)
             {
                 changeOrder.State = OrderState.CanceledByUser;
@@ -47,9 +47,9 @@ namespace BLL
             return false;
         }
 
-        public bool ReceivedOrder(int orderId, IDataContex contex)
+        public bool ReceivedOrder(int orderId, IDataContext context)
         {
-            OrderEntity changeOrder = contex.Orders.Find(o => o.Id == orderId);
+            OrderEntity changeOrder = context.Orders.Find(o => o.Id == orderId);
             if (changeOrder.State != OrderState.CanceledByUser && changeOrder.State != OrderState.CanceledByAdmin)
             {
                 changeOrder.State = OrderState.Received;
@@ -58,11 +58,11 @@ namespace BLL
             return false;
         }
 
-        public bool ChangeUserInfo(AccountEntity user, IDataContex contex)
+        public bool ChangeUserInfo(AccountEntity user, IDataContext context)
         {
-            if (contex.Customers.Find(c => c.Id == user.Id) == null)
+            if (context.Customers.Find(c => c.Id == user.Id) == null)
                 return false;
-            contex.Customers.FindLast(c => c.Id == user.Id).Update(user);
+            context.Customers.FindLast(c => c.Id == user.Id).Update(user);
             return true;
         }
     }

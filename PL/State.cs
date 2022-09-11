@@ -11,12 +11,12 @@ namespace PL
 {
     public class State
     {
-        private readonly IDataContex _dataContex;
+        private readonly IDataContext _dataContext;
         private IOperations _userOperations;
 
         public State()
         {
-            _dataContex = new DataContex();
+            _dataContext = new DataContext();
             _userOperations = new GuestOperations();
         }
 
@@ -25,7 +25,7 @@ namespace PL
             bool continueCode = true;
             while (continueCode)
             {
-                continueCode = _userOperations.ShowAvalibleOperations(_dataContex, ref _userOperations);
+                continueCode = _userOperations.ShowAvalibleOperations(_dataContext, ref _userOperations);
             }
         }
     }

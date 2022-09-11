@@ -10,18 +10,18 @@ namespace BLL
 {
     public class GuestService : BaseService
     {
-        public bool RegisterNewAccount(UserEntity newAccount, IDataContex contex)
+        public bool RegisterNewAccount(UserEntity newAccount, IDataContext context)
         {
-            if (contex.Customers.Find(c => c.Email == newAccount.Email) != null)
+            if (context.Customers.Find(c => c.Email == newAccount.Email) != null)
                 return false;
-            newAccount.Id = contex.Customers.LastOrDefault().Id + 1;
-            contex.Customers.Add(newAccount);
+            newAccount.Id = context.Customers.LastOrDefault().Id + 1;
+            context.Customers.Add(newAccount);
             return true;
         }
-        public AccountEntity LogIn(string email, string password, IDataContex contex)
+        public AccountEntity LogIn(string email, string password, IDataContext context)
         {
-            return (AccountEntity) contex.Customers.Find(c => c.Email == email && c.Password == password) ??
-                contex.Admins.Find(c => c.Email == email && c.Password == password);
+            return (AccountEntity) context.Customers.Find(c => c.Email == email && c.Password == password) ??
+                context.Admins.Find(c => c.Email == email && c.Password == password);
         }
     }
 }
