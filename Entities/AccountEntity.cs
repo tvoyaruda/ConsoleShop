@@ -20,15 +20,15 @@ namespace Entities
         }
         public void Update(AccountEntity account)
         {
-            if(account.Name != null)
+            if(!string.IsNullOrEmpty(account.Name))
                 this.Name = account.Name;
-            if (account.Surname != null)
+            if (!string.IsNullOrEmpty(account.Surname))
                 this.Surname = account.Surname;
-            if (account.DateOfBirth != null)
+            if (account.DateOfBirth != default)
                 this.DateOfBirth = account.DateOfBirth;
-            if (account.Email != null)
+            if (!string.IsNullOrEmpty(account.Email))
                 this.Email = account.Email;
-            if (account.Password != null)
+            if (!string.IsNullOrEmpty(account.Password))
                 this.Password = account.Password;
         }
     }

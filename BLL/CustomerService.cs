@@ -21,7 +21,7 @@ namespace BLL
             if (product == null || user == null)
                 return false;
             if (nextId < 0)
-                nextId = context.Orders.Count() > 0 ? context.Orders.Last().Id + 1 : 1;
+                nextId = context.Orders.Any() ? context.Orders.Last().Id + 1 : 1;
             OrderEntity order = new OrderEntity()
             {
                 Id = nextId,

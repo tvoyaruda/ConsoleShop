@@ -15,25 +15,6 @@ namespace BLL
 
         public IEnumerable<ProductEntity> GetProducts(IDataContext context) => context.Products;
 
-        public bool CreateOrder(UserEntity currentCustomer, int productId, IDataContext context)
-        {
-            ProductEntity product = context.Products.Find(p => p.Id == productId);
-            if (product == null)
-                return false;
-            if(nextId < 0)
-                nextId = context.Orders.LastOrDefault().Id + 1;
-            OrderEntity order = new OrderEntity()
-            {
-                Id = nextId,
-                State = OrderState.New,
-                Product = product,
-                Customer = currentCustomer
-            };
-            context.Orders.Add(order);
-            nextId++;
-            return true;
-        }
-
         public IEnumerable<OrderEntity> GetOrders(IDataContext context) =>
             context.Orders;
 

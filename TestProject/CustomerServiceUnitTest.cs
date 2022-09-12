@@ -13,7 +13,7 @@ namespace TestProject
     [TestClass]
     public class CustomerServiceUnitTest
     {
-        private CustomerService customerService;
+        private readonly CustomerService customerService;
                 
         public CustomerServiceUnitTest()
         {
@@ -56,7 +56,7 @@ namespace TestProject
 
             //Assert
             Assert.IsTrue(result);
-            Assert.AreEqual(context.Orders.Count, 1);
+            Assert.AreEqual(1, context.Orders.Count);
         }
 
         [TestMethod]
@@ -85,7 +85,7 @@ namespace TestProject
 
             //Assert
             Assert.IsFalse(result);
-            Assert.AreEqual(context.Orders.Count, 0);
+            Assert.AreEqual(0, context.Orders.Count);
         }
 
         [TestMethod]
@@ -111,7 +111,7 @@ namespace TestProject
 
             //Assert
             Assert.IsFalse(result);
-            Assert.AreEqual(context.Orders.Count, 0);
+            Assert.AreEqual(0, context.Orders.Count);
         }
 
         [TestMethod]
@@ -145,7 +145,7 @@ namespace TestProject
             var result = customerService.ViewOrders(user.Id, context);
 
             //Assert
-            Assert.AreEqual(result.Count(), 1);
+            Assert.AreEqual(1, result.Count());
         }
 
         [TestMethod]
@@ -154,13 +154,12 @@ namespace TestProject
             //Arrange
             var context = Substitute.For<IDataContext>();
             context.Orders.Returns(new List<OrderEntity>());
-            var ordersCountPrev = context.Orders.Count();
 
             //Act
             var result = customerService.ViewOrders(1, context);
 
             //Assert
-            Assert.AreEqual(result.Count(), 0);
+            Assert.AreEqual(0, result.Count());
         }
 
 
@@ -228,8 +227,6 @@ namespace TestProject
 
             //Act
             var result = customerService.ReceivedOrder(order.Id, user.Id, context);
-            var s = context.Orders.First(o => o.Id == order.Id).State;
-            var sr = order.State;
             //Assert
             Assert.IsFalse(result);
             Assert.AreEqual(context.Orders.First(o => o.Id == order.Id).State, order.State);

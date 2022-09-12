@@ -19,11 +19,11 @@ namespace Entities
 
         public void Update(ProductEntity product)
         {
-            if (product.Name != null)
+            if (!string.IsNullOrEmpty(product.Name))
                 this.Name = product.Name;
-            if (product.Category != null)
+            if (!string.IsNullOrEmpty(product.Category))
                 this.Category = product.Category;
-            if (product.Price != 0)
+            if (product.Price != default)
                 this.Price = product.Price;
         }
     }
