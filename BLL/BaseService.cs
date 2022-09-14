@@ -10,9 +10,9 @@ namespace BLL
 {
     public abstract class BaseService
     {
-        public IEnumerable<ProductEntity> SearchbyName(string name, IDataContext context)
+        public IEnumerable<ProductEntity> SearchbyName(string name, IRepository context)
         {
-            return context.Products.Where(p => p.Name.ToLower().Contains(name.ToLower())).Select(p => p);
+            return context.GetProductsByName(name);
         }
     }
 }

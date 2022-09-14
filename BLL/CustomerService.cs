@@ -10,62 +10,58 @@ namespace BLL
 {
     public class CustomerService: BaseService
     {
-        private int nextId = -1;
+        public IEnumerable<ProductEntity> GetAllProducts(IRepository context) => context.GetProducts();
 
-        public IEnumerable<ProductEntity> ListOfProduct(IDataContext context) => context.Products;
+        public IEnumerable<OrderEntity> GetAllCustomerOrders(int customerId, IRepository context) =>
+            context.GetOrdersByCustomerId(customerId);
 
-        public bool CreateOrder(int customerId, int productId, IDataContext context)
+        public bool CreateOrder(int customerId, int productId, IRepository context)
         {
-            UserEntity user = context.Customers.Find(c => c.Id == customerId);
-            ProductEntity product = context.Products.Find(p => p.Id == productId);
+            CustomerEntity user = context.GetCustomerById(customerId);
+            ProductEntity product = context.GetProductById(productId);
             if (product == null || user == null)
                 return false;
-            if (nextId < 0)
-                nextId = context.Orders.Any() ? context.Orders.Last().Id + 1 : 1;
             OrderEntity order = new OrderEntity()
             {
-                Id = nextId,
                 State = OrderState.New,
                 Product = product,
                 Customer = user
             };
-            context.Orders.Add(order);
-            nextId++;
+            context.AddOrder(order);
             return true;
         }
 
-        public IEnumerable<OrderEntity> ViewOrders(int customerId, IDataContext context) =>
-            context.Orders?.Where(o => o.Customer.Id == customerId).Select(o => o);
-
-        public bool CancelOrder(int orderId, IDataContext context)
+        public bool UpdateOrderStateAsCanceled(int orderId, int userId, IRepository context)
         {
-            OrderEntity changeOrder = context.Orders.Find(o => o.Id == orderId);
-            if(changeOrder.State == OrderState.New)
+            OrderEntity changeOrder = context.GetOrderById(orderId);
+            if(changeOrder != null && changeOrder.Customer.Id == userId && changeOrder.State == OrderState.New)
             {
-                changeOrder.State = OrderState.CanceledByUser;
+                context.UpdateOrderState(orderId, OrderState.CanceledByUser);
                 return true;
             }
             return false;
         }
 
-        public bool ReceivedOrder(int orderId, int userId, IDataContext context)
+        public bool UpdateOrderStateAsReceived(int orderId, int userId, IRepository context)
         {
-            OrderEntity changeOrder = context.Orders?.Find(o => o.Id == orderId);
-            if(changeOrder == null)
-                return false;
-            if (changeOrder.Customer.Id == userId && changeOrder.State != OrderState.CanceledByUser && changeOrder.State != OrderState.CanceledByAdmin)
+            OrderEntity changeOrder = context.GetOrderById(orderId);
+            if (changeOrder != null 
+                    && changeOrder.Customer.Id == userId 
+                        && changeOrder.State != OrderState.CanceledByUser 
+                            && changeOrder.State != OrderState.CanceledByAdmin)
             {
-                changeOrder.State = OrderState.Received;
+                context.UpdateOrderState(orderId, OrderState.Received);
                 return true;
             }
             return false;
         }
 
-        public bool ChangeUserInfo(AccountEntity user, IDataContext context)
+        public bool UpdateCustomerInfo(CustomerEntity customer, IRepository context)
         {
-            if (context.Customers.Find(c => c.Id == user.Id) == null)
+            AccountEntity findCustomer = context.GetCustomerById(customer.Id);
+            if (findCustomer == null)
                 return false;
-            context.Customers.Find(c => c.Id == user.Id).Update(user);
+            context.UpdateCustomer(customer);
             return true;
         }
     }

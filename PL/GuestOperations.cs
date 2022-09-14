@@ -17,7 +17,7 @@ namespace PL
             _userService = new GuestService();
         }
 
-        public override bool ShowAvalibleOperations(IDataContext dataContext,ref IOperations operations)
+        public override bool ShowAvailableOperations(IRepository dataContext,ref IOperations operations)
         {
             Console.WriteLine("\n\nGuest");
             Console.WriteLine($"Enter 0 for exit");
@@ -43,7 +43,7 @@ namespace PL
             return true;
         }
 
-        private IOperations SignUp(IDataContext dataContext)
+        private IOperations SignUp(IRepository dataContext)
         {
             Console.WriteLine("Input your email");
             string email = Console.ReadLine();
@@ -59,9 +59,8 @@ namespace PL
             int month = int.Parse(Console.ReadLine());
             Console.WriteLine("Input your day of birth");
             int day = int.Parse(Console.ReadLine());
-            UserEntity newUser = new UserEntity
+            CustomerEntity newUser = new CustomerEntity
             {
-                Id = 0,
                 Name = name,
                 Surname = surname,
                 DateOfBirth = new DateTime(year, month, day),
@@ -69,7 +68,7 @@ namespace PL
                 Password = password
             };
 
-            if (_userService.RegisterNewAccount(newUser, dataContext))
+            if (_userService.CreateCustomer(newUser, dataContext))
             {
                 Console.WriteLine("User added!");
                 currentUser = newUser;
@@ -79,19 +78,19 @@ namespace PL
                 Console.WriteLine("Something went wrong..Try again");
                 currentUser = null;
             }
-            IOperations newOperations = OperationsSelector.GetOperations(currentUser?.GetType().Name);
+            IOperations newOperations = OperationsSelector.GetOperations(currentUser?.GetType());
             newOperations.SetUser(currentUser);
             return newOperations;
         }
 
-        private IOperations LogIn(IDataContext dataContext)
+        private IOperations LogIn(IRepository dataContext)
         {
             Console.WriteLine("Input your email");
             string email = Console.ReadLine();
             Console.WriteLine("Input your password");
             string password = Console.ReadLine();
             currentUser = _userService.LogIn(email, password, dataContext);
-            IOperations newOperations = OperationsSelector.GetOperations(currentUser?.GetType().Name);
+            IOperations newOperations = OperationsSelector.GetOperations(currentUser?.GetType());
             newOperations.SetUser(currentUser);
             return newOperations;
         }

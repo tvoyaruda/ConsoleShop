@@ -6,17 +6,6 @@ using System.Threading.Tasks;
 
 namespace Entities
 {
-    public enum OrderState
-    {
-        New,
-        CanceledByAdmin,
-        PaymentReceived,
-        Sent,
-        Received,
-        Completed, 
-        CanceledByUser
-    }
-
     public class OrderEntity
     {
         public int Id { get; set; }

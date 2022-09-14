@@ -16,7 +16,7 @@ namespace PL
             _userService = new AdminService();
         }
 
-        public override bool ShowAvalibleOperations(IDataContext dataContext, ref IOperations operations)
+        public override bool ShowAvailableOperations(IRepository dataContext, ref IOperations operations)
         {
             Console.WriteLine("\n\nAdmin");
             Console.WriteLine($"Hello {currentUser.Name}!");
@@ -48,7 +48,7 @@ namespace PL
                     CreateNewOrder(dataContext);
                     break;
                 case 5:
-                    ChangeOrderStatus(dataContext);
+                    UpdateOrderState(dataContext);
                     break;
                 case 6:
                     ShowCustomers(dataContext);
@@ -57,10 +57,10 @@ namespace PL
                     ChangeInfo(dataContext);
                     break;
                 case 8:
-                    AddNewProduct(dataContext);
+                    CreateProduct(dataContext);
                     break;
                 case 9:
-                    ChangeProductInfo(dataContext);
+                    UpdateProductInfo(dataContext);
                     break;
                 case 10:
                     operations = LogOut();
@@ -71,36 +71,36 @@ namespace PL
             return true;
         }
 
-        private void ShowOrders(IDataContext dataContext)
+        private void ShowOrders(IRepository dataContext)
         {
             Console.WriteLine("All orders:");
-            foreach (var o in _userService.GetOrders(dataContext))
+            foreach (var o in _userService.GetAllOrders(dataContext))
             {
                 Console.WriteLine(o);
             }
         }
 
-        private void ShowProducts(IDataContext dataContext)
+        private void ShowProducts(IRepository dataContext)
         {
             Console.WriteLine("All products:");
-            foreach (var p in _userService.GetProducts(dataContext))
+            foreach (var p in _userService.GetAllProducts(dataContext))
                 Console.WriteLine(p);
         }
 
-        private void ShowCustomers(IDataContext dataContext)
+        private void ShowCustomers(IRepository dataContext)
         {
             Console.WriteLine("All customers:");
-            foreach (var p in _userService.GetCustomers(dataContext))
+            foreach (var p in _userService.GetAllCustomers(dataContext))
                 Console.WriteLine(p);
         }
 
         private IOperations LogOut()
         {
             currentUser = null;
-            return OperationsSelector.GetOperations(currentUser?.GetType().Name);
+            return OperationsSelector.GetOperations(currentUser?.GetType());
         }
 
-        private void CreateNewOrder(IDataContext dataContext)
+        private void CreateNewOrder(IRepository dataContext)
         {
             ShowProducts(dataContext);
             Console.WriteLine("Enter product id");
@@ -117,7 +117,7 @@ namespace PL
                 Console.WriteLine("Wrong product id! Try to order again");
         }
 
-        private void ChangeOrderStatus(IDataContext dataContext)
+        private void UpdateOrderState(IRepository dataContext)
         {
             ShowOrders(dataContext);
             Console.WriteLine("Enter order id to change its state:");
@@ -125,7 +125,7 @@ namespace PL
             OrderStates();
             Console.WriteLine("Enter order state id:");
             int orderState = int.Parse(Console.ReadLine()) + 1;
-            if (_userService.ChangeOrderStatus(orderId, orderState, dataContext))
+            if (_userService.UpdateOrderState(orderId, orderState, dataContext))
             {
                 Console.WriteLine("Order state changed!");
                 ShowOrders(dataContext);
@@ -145,9 +145,9 @@ namespace PL
         }
 
 
-        private void ChangeInfo(IDataContext dataContext)
+        private void ChangeInfo(IRepository dataContext)
         {
-            AccountEntity customer = new UserEntity();
+            AccountEntity customer = new CustomerEntity();
             ShowCustomers(dataContext);
             Console.WriteLine("Enter customer id");
             customer.Id = int.Parse(Console.ReadLine());
@@ -182,13 +182,13 @@ namespace PL
                 default:
                     break;
             }
-            if (_userService.ChangeUserInfo(customer, dataContext))
+            if (_userService.UpdateCustomerInfo((CustomerEntity)customer, dataContext))
                 Console.WriteLine("Change saved!");
             else
                 Console.WriteLine("Some problem. Try again");
         }
 
-        private void ChangeProductInfo(IDataContext dataContext)
+        private void UpdateProductInfo(IRepository dataContext)
         {
             ProductEntity product = new ProductEntity();
             ShowProducts(dataContext);
@@ -218,13 +218,13 @@ namespace PL
                 default:
                     break;
             }
-            if (_userService.ChangeProductInfo(product, dataContext))
+            if (_userService.UpdateProductInfo(product, dataContext))
                 Console.WriteLine("Change saved!");
             else
                 Console.WriteLine("Some problem. Try again");
         }
 
-        private void AddNewProduct(IDataContext dataContext)
+        private void CreateProduct(IRepository dataContext)
         {
             ProductEntity product = new ProductEntity();
             ShowProducts(dataContext);
@@ -234,7 +234,7 @@ namespace PL
             product.Category = Console.ReadLine();
             Console.WriteLine("Enter product price:");
             product.Price = decimal.Parse(Console.ReadLine());
-            if (_userService.AddNewProduct(product, dataContext))
+            if (_userService.CreateProduct(product, dataContext))
                 Console.WriteLine("Product added!");
             else
                 Console.WriteLine("Something went wrong..Try again");

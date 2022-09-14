@@ -7,18 +7,22 @@ using System.Threading.Tasks;
 
 namespace Data
 {
-    public class DataContext : IDataContext
+    public class ReadonlyConstDataContext : IRepository
     {
-        public List<UserEntity> Customers { get; }
+        public List<CustomerEntity> Customers { get; }
         public List<AdminEntity> Admins { get; }
         public List<OrderEntity> Orders { get; }
         public List<ProductEntity> Products { get; }
+        private int nextOrderId;
+        private int nextProductId;
+        private int nextCustomerId;
+        private int nextAdminId;
 
-        public DataContext()
+        public ReadonlyConstDataContext()
         {
-            Customers = new List<UserEntity>
+            Customers = new List<CustomerEntity>
             {
-                new UserEntity
+                new CustomerEntity
                 {
                     Id = 1,
                     Name = "Adam",
@@ -27,7 +31,7 @@ namespace Data
                     Email = "1", //"user1@gmail.com"
                     Password = "1" //"user1"
                 },
-                new UserEntity
+                new CustomerEntity
                 {
                     Id = 2,
                     Name = "Anna",
@@ -36,7 +40,7 @@ namespace Data
                     Email = "user2@gmail.com",
                     Password = "user2"
                 },
-                new UserEntity
+                new CustomerEntity
                 {
                     Id = 3,
                     Name = "Bell",
@@ -45,7 +49,7 @@ namespace Data
                     Email = "user3@gmail.com",
                     Password = "user3"
                 },
-                new UserEntity
+                new CustomerEntity
                 {
                     Id = 4,
                     Name = "Solar",
@@ -54,7 +58,7 @@ namespace Data
                     Email = "user4@gmail.com",
                     Password = "user4"
                 },
-                new UserEntity
+                new CustomerEntity
                 {
                     Id = 5,
                     Name = "Mirta",
@@ -63,7 +67,7 @@ namespace Data
                     Email = "user5@gmail.com",
                     Password = "user5"
                 },
-                new UserEntity
+                new CustomerEntity
                 {
                     Id = 6,
                     Name = "Viktor",
@@ -218,6 +222,82 @@ namespace Data
                     State = OrderState.PaymentReceived
                 }
             };
+
+            nextCustomerId = Customers.Last().Id + 1;
+            nextAdminId = Admins.Last().Id + 1;
+            nextProductId = Products.Last().Id + 1;
+            nextOrderId = Orders.Last().Id + 1;
         }
+
+        public void AddOrder(OrderEntity order)
+        {
+            order.Id = nextOrderId;
+            Orders.Add(order);
+            nextOrderId++;
+        }
+
+        public void AddProduct(ProductEntity product)
+        {
+            product.Id = nextProductId;
+            Products.Add(product);
+            nextProductId++;
+        }
+
+        public void AddCustomer(CustomerEntity customer)
+        {
+            customer.Id = nextCustomerId;
+            Customers.Add(customer);
+            nextCustomerId++;
+        }
+
+        public void AddAdmin(AdminEntity admin)
+        {
+            admin.Id = nextAdminId;
+            Admins.Add(admin);
+            nextAdminId++;
+        }
+
+        public OrderEntity GetOrderById(int orderId) => Orders.First(e => e.Id == orderId);
+
+        public ProductEntity GetProductById(int productId) => Products.First(e => e.Id == productId);
+
+        public CustomerEntity GetCustomerById(int customerId) => Customers.First(e => e.Id == customerId);
+
+        public CustomerEntity GetCustomerByEmail(string email)
+            => Customers.First(c => c.Email == email);
+
+        public CustomerEntity GetCustomerByEmailAndPass(string email, string pass)
+            => Customers.First(c => c.Email == email && c.Password == pass);
+
+        public AdminEntity GetAdminById(int adminId) => Admins.First(e => e.Id == adminId);
+
+        public AdminEntity GetAdminByEmail(string email)
+            => Admins.First(c => c.Email == email);
+
+        public AdminEntity GetAdminByEmailAndPass(string email, string pass)
+            => Admins.First(c => c.Email == email && c.Password == pass);
+
+        public IEnumerable<OrderEntity> GetOrders() => Orders;
+
+        public IEnumerable<OrderEntity> GetOrdersByCustomerId(int customerId)
+            => Orders.Where(e => e.Customer.Id == customerId);
+
+        public IEnumerable<ProductEntity> GetProducts() => Products;
+
+        public IEnumerable<ProductEntity> GetProductsByName(string name)
+        {
+            Func<ProductEntity, bool> rule = p => p.Name.ToLower().Contains(name.ToLower());
+            return Products.Where(rule);
+        }
+
+        public IEnumerable<CustomerEntity> GetCustomers() => Customers;
+
+        public IEnumerable<AdminEntity> GetAdmins() => Admins;
+
+        public void UpdateCustomer(CustomerEntity customer) => GetCustomerById(customer.Id).Update(customer);
+
+        public void UpdateProduct(ProductEntity product) => GetProductById(product.Id).Update(product);
+
+        public void UpdateOrderState(int orderId, OrderState orderState) => GetOrderById(orderId).State = orderState;
     }
 }

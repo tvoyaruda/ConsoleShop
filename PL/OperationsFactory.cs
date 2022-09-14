@@ -11,22 +11,18 @@ namespace PL
 {
     public static class OperationsSelector
     {
-        private static Dictionary<string, IOperations> keyValuePairs = new Dictionary<string, IOperations>
+        private static Dictionary<Type, IOperations> keyValuePairs = new Dictionary<Type, IOperations>
         {
-            {"UserEntity", new CustomerOperations() },
-            {"AdminEntity", new AdminOperations() }
+            {typeof(CustomerEntity), new CustomerOperations() },
+            {typeof(AdminEntity), new AdminOperations() }
         };
 
-        public static IOperations GetOperations(string accountType)
+        public static IOperations GetOperations(Type accountType)
         {
-            try
-            {
+            if(keyValuePairs.ContainsKey(accountType))
                 return keyValuePairs[accountType];
-            }
-            catch
-            {
+            else
                 return new GuestOperations();
-            }
         }
     }
 }

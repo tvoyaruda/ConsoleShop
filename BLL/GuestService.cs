@@ -10,18 +10,17 @@ namespace BLL
 {
     public class GuestService : BaseService
     {
-        public bool RegisterNewAccount(UserEntity newAccount, IDataContext context)
+        public bool CreateCustomer(CustomerEntity newAccount, IRepository context)
         {
-            if (context.Customers.Find(c => c.Email == newAccount.Email) != null)
+            if (context.GetAdminByEmail(newAccount.Email) != null)
                 return false;
-            newAccount.Id = context.Customers.LastOrDefault().Id + 1;
-            context.Customers.Add(newAccount);
+            context.AddCustomer(newAccount);
             return true;
         }
-        public AccountEntity LogIn(string email, string password, IDataContext context)
+        public AccountEntity LogIn(string email, string password, IRepository context)
         {
-            return (AccountEntity) context.Customers.Find(c => c.Email == email && c.Password == password) ??
-                context.Admins.Find(c => c.Email == email && c.Password == password);
+            return (AccountEntity) context.GetAdminByEmailAndPass(email, password) ??
+                context.GetCustomerByEmailAndPass(email, password);
         }
     }
 }

@@ -13,14 +13,14 @@ namespace PL
     {
         protected T _userService;
         protected AccountEntity currentUser;
-        public abstract bool ShowAvalibleOperations(IDataContext dataContext, ref IOperations operations);
+        public abstract bool ShowAvailableOperations(IRepository dataContext, ref IOperations operations);
 
         public void SetUser(AccountEntity user)
         {
             currentUser = user;
         }
 
-        protected void FindProduct(IDataContext dataContext)
+        protected void FindProduct(IRepository dataContext)
         {
             Console.WriteLine("Input name of product");
             string name = Console.ReadLine();

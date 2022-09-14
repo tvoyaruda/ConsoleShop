@@ -10,74 +10,68 @@ namespace BLL
 {
     public class AdminService: BaseService
     {
-        private int nextId = -1;
-        private int nextProductId = -1;
+        public IEnumerable<OrderEntity> GetAllOrders(IRepository context) =>
+            context.GetOrders();
 
-        public IEnumerable<ProductEntity> GetProducts(IDataContext context) => context.Products;
-
-        public IEnumerable<OrderEntity> GetOrders(IDataContext context) =>
-            context.Orders;
-
-        public IEnumerable<UserEntity> GetCustomers(IDataContext context) =>
-            context.Customers;
-
-        public void CancelOrder(OrderEntity order, IDataContext context) =>
-            context.Orders.Find(o => o.Id == order.Id).State = OrderState.CanceledByUser;
-
-        public bool CreateOrder(int customerId, int productId, IDataContext context)
+        public bool CreateOrder(int customerId, int productId, IRepository context)
         {
-            UserEntity user = context.Customers.Find(c => c.Id == customerId);
-            ProductEntity product = context.Products.Find(p => p.Id == productId);
+            CustomerEntity user = context.GetCustomerById(customerId);
+            ProductEntity product = context.GetProductById(productId);
             if (product == null || user == null)
                 return false;
-            if (nextId < 0)
-                nextId = context.Orders.LastOrDefault().Id + 1;
             OrderEntity order = new OrderEntity()
             {
-                Id = nextId,
                 State = OrderState.New,
                 Product = product,
                 Customer = user
             };
-            context.Orders.Add(order);
-            nextId++;
+            context.AddOrder(order);
             return true;
         }
 
-        public bool ChangeOrderStatus(int orderId, int stateId, IDataContext context)
+        public bool UpdateOrderState(int orderId, int stateId, IRepository context)
         {
-            OrderEntity changeOrder = context.Orders.Find(o => o.Id == orderId);
+            OrderEntity changeOrder = context.GetOrderById(orderId);
             if (changeOrder.State != OrderState.CanceledByUser)
             {
-                changeOrder.State = (OrderState)stateId;
+                context.UpdateOrderState(orderId, (OrderState)stateId);
                 return true;
             }
             return false;
         }
 
-        public bool ChangeUserInfo(AccountEntity user, IDataContext context)
+
+        public void UpdateOrderStateAsCanceled(int orderId, IRepository context) =>
+            context.UpdateOrderState(orderId, OrderState.CanceledByAdmin);
+
+
+        public IEnumerable<CustomerEntity> GetAllCustomers(IRepository context) =>
+            context.GetCustomers();        
+
+        public bool UpdateCustomerInfo(CustomerEntity user, IRepository context)
         {
-            if (context.Customers.Find(c => c.Id == user.Id) == null)
+            if (context.GetCustomerById(user.Id) == null)
                 return false;
-            context.Customers.FindLast(c => c.Id == user.Id).Update(user);
+            context.UpdateCustomer(user);
             return true;
         }
 
-        public bool ChangeProductInfo(ProductEntity product, IDataContext context)
+
+        public IEnumerable<ProductEntity> GetAllProducts(IRepository context) => context.GetProducts();
+
+        public bool CreateProduct(ProductEntity product, IRepository context)
         {
-            if (context.Products.Find(c => c.Id == product.Id) == null)
+            if (context.GetProductsByName(product.Name) != null)
                 return false;
-            context.Products.FindLast(c => c.Id == product.Id).Update(product);
+            context.AddProduct(product);
             return true;
         }
 
-        public bool AddNewProduct(ProductEntity product, IDataContext context)
+        public bool UpdateProductInfo(ProductEntity product, IRepository context)
         {
-            if (nextProductId < 0)
-                nextProductId = context.Products.LastOrDefault().Id + 1;
-            product.Id = nextProductId;
-            context.Products.Add(product);
-            nextProductId++;
+            if (context.GetProductById(product.Id) == null)
+                return false;
+            context.UpdateProduct(product);
             return true;
         }
     }

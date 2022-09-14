@@ -6,21 +6,11 @@ using System.Threading.Tasks;
 
 namespace Entities
 {
-    public abstract class AccountEntity
+    public class AdminEntity: AccountEntity
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Surname { get; set; }
-        public DateTime DateOfBirth { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public override string ToString()
+        public override void Update(AccountEntity account)
         {
-            return $"{Id} - {Name} - {Surname} - {DateOfBirth} - {Email}";
-        }
-        public void Update(AccountEntity account)
-        {
-            if(!string.IsNullOrEmpty(account.Name))
+            if (!string.IsNullOrEmpty(account.Name))
                 this.Name = account.Name;
             if (!string.IsNullOrEmpty(account.Surname))
                 this.Surname = account.Surname;
