@@ -10,7 +10,7 @@ namespace BLL
 {
     public class AdminService: BaseService
     {
-        public IEnumerable<OrderEntity> GetAllOrders(IRepository context) =>
+        public IEnumerable<OrderEntity> GetAllOrders() =>
             context.GetOrders();
 
         public bool CreateOrder(int customerId, int productId, IRepository context)

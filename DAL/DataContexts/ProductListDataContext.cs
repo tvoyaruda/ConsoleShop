@@ -5,9 +5,9 @@ using Entities;
 
 namespace Data
 {
-    public class ProductListContext: ListContext<ProductEntity>
+    public class ProductListDataContext: ListContext<ProductEntity>
     {
-        public ProductListContext()
+        public ProductListDataContext()
         {
             DataList = new List<ProductEntity>
             {

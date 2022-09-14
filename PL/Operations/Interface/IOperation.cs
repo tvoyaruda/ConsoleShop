@@ -12,6 +12,6 @@ namespace PL
     public interface IOperations
     {
         void SetUser(AccountEntity user);
-        bool ShowAvailableOperations(IRepository dataContext, ref IOperations operations);
+        bool ShowAvailableOperations();
     }
 }

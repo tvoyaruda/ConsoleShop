@@ -5,9 +5,9 @@ using Entities;
 
 namespace Data
 {
-    public class OrderListContext : ListContext<OrderEntity>
+    public class OrderListDataContext : ListContext<OrderEntity>
     {
-        public OrderListContext()
+        public OrderListDataContext()
         {
             DataList = new List<OrderEntity>
             {

@@ -8,18 +8,18 @@ namespace Data
 {
     public abstract class ListRepository<T,U> : IRepository<T> 
         where T : BaseEntity, IUpdatebly<T>
-        where U : ListContext<T>, new()
+        where U : ListContext<T>
     {
         protected U Context { get; }
         protected int nextId;
 
-        public ListRepository()
+        public ListRepository(U context)
         {
-            Context = new U();
+            Context = context;
             nextId = Context.DataList.Last().Id + 1;
         }
 
-        public void CreateItem(T item)
+        public void Create(T item)
         {
             item.Id = nextId;
             Context.DataList.Add(item);
@@ -36,7 +36,7 @@ namespace Data
             return Context.DataList.First(p => p.Id == Id);
         }
 
-        public void UpdateItem(T item)
+        public void Update(T item)
         {
              GetById(item.Id).Update(item);
         }

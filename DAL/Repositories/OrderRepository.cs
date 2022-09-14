@@ -6,8 +6,10 @@ using System.Linq;
 
 namespace Data
 {
-    public class OrderRepository: ListRepository<OrderEntity, OrderListContext>
+    public class OrderRepository : ListRepository<OrderEntity, OrderListDataContext>
     {
+        public OrderRepository(OrderListDataContext context) : base(context) { }
+
         public IEnumerable<OrderEntity> GetOrdersByCustomerId(int customerId)
             => Context.DataList.Where(e => e.CustomerId == customerId);
 

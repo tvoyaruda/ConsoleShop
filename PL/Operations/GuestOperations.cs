@@ -78,7 +78,7 @@ namespace PL
                 Console.WriteLine("Something went wrong..Try again");
                 currentUser = null;
             }
-            IOperations newOperations = OperationsSelector.GetOperations(currentUser?.GetType());
+            IOperations newOperations = OperationsSelector.GetOperations(currentUser.Role);
             newOperations.SetUser(currentUser);
             return newOperations;
         }
@@ -90,7 +90,7 @@ namespace PL
             Console.WriteLine("Input your password");
             string password = Console.ReadLine();
             currentUser = _userService.LogIn(email, password, dataContext);
-            IOperations newOperations = OperationsSelector.GetOperations(currentUser?.GetType());
+            IOperations newOperations = OperationsSelector.GetOperations(currentUser.Role);
             newOperations.SetUser(currentUser);
             return newOperations;
         }

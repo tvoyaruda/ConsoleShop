@@ -4,8 +4,9 @@ using System.Text;
 
 namespace Entities
 {
-    public abstract class BaseEntity
+    public enum UserRoles
     {
-        public int Id { get; set; }
+        Customer,
+        Admin
     }
 }

@@ -5,11 +5,11 @@ using Entities;
 
 namespace Data
 {
-    public class CustomerListContext: ListContext<CustomerEntity>
+    public class UserListDataContext: ListContext<AccountEntity>
     {
-        public CustomerListContext()
+        public UserListDataContext()
         {
-            DataList = new List<CustomerEntity>
+            DataList = new List<AccountEntity>
             {
                 new CustomerEntity
                 {
@@ -65,6 +65,36 @@ namespace Data
                     Email = "user6@gmail.com",
                     Password = "user6"
                 },
+                new AdminEntity
+                {
+                    Id = 1,
+                    Name = "David",
+                    Surname = "Glinth",
+                    DateOfBirth = new DateTime(1999,4,16),
+                    Email = "admin1@gmail.com",
+                    Password = "admin1",
+                    Role = UserRoles.Admin
+                },
+                new AdminEntity
+                {
+                    Id = 2,
+                    Name = "Lora",
+                    Surname = "Linder",
+                    DateOfBirth = new DateTime(1999,5,15),
+                    Email = "admin2@gmail.com",
+                    Password = "admin2",
+                    Role = UserRoles.Admin
+                },
+                new AdminEntity
+                {
+                    Id = 3,
+                    Name = "Test",
+                    Surname = "Test",
+                    DateOfBirth = new DateTime(1999,5,15),
+                    Email = "a1",
+                    Password = "a1",
+                    Role = UserRoles.Admin
+                }
             };
         }
     }

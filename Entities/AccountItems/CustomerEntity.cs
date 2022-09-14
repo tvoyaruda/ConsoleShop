@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace Entities
 {
-    public class CustomerEntity : AccountEntity
+    public class CustomerEntity : AccountEntity, IUpdatebly<CustomerEntity>
     {
-        public override void Update(AccountEntity account)
+        public void Update(CustomerEntity customer)
         {
-            if (!string.IsNullOrEmpty(account.Name))
-                this.Name = account.Name;
-            if (!string.IsNullOrEmpty(account.Surname))
-                this.Surname = account.Surname;
-            if (account.DateOfBirth != default)
-                this.DateOfBirth = account.DateOfBirth;
-            if (!string.IsNullOrEmpty(account.Email))
-                this.Email = account.Email;
-            if (!string.IsNullOrEmpty(account.Password))
-                this.Password = account.Password;
+            if (!string.IsNullOrEmpty(customer.Name))
+                this.Name = customer.Name;
+            if (!string.IsNullOrEmpty(customer.Surname))
+                this.Surname = customer.Surname;
+            if (customer.DateOfBirth != default)
+                this.DateOfBirth = customer.DateOfBirth;
+            if (!string.IsNullOrEmpty(customer.Email))
+                this.Email = customer.Email;
+            if (!string.IsNullOrEmpty(customer.Password))
+                this.Password = customer.Password;
         }
     }
 }

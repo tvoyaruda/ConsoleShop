@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace Entities
 {
-    public class AdminEntity: AccountEntity
+    public class AdminEntity: AccountEntity, IUpdatebly<AdminEntity>
     {
-        public override void Update(AccountEntity account)
+        public void Update(AdminEntity admin)
         {
-            if (!string.IsNullOrEmpty(account.Name))
-                this.Name = account.Name;
-            if (!string.IsNullOrEmpty(account.Surname))
-                this.Surname = account.Surname;
-            if (account.DateOfBirth != default)
-                this.DateOfBirth = account.DateOfBirth;
-            if (!string.IsNullOrEmpty(account.Email))
-                this.Email = account.Email;
-            if (!string.IsNullOrEmpty(account.Password))
-                this.Password = account.Password;
+            if (!string.IsNullOrEmpty(admin.Name))
+                this.Name = admin.Name;
+            if (!string.IsNullOrEmpty(admin.Surname))
+                this.Surname = admin.Surname;
+            if (admin.DateOfBirth != default)
+                this.DateOfBirth = admin.DateOfBirth;
+            if (!string.IsNullOrEmpty(admin.Email))
+                this.Email = admin.Email;
+            if (!string.IsNullOrEmpty(admin.Password))
+                this.Password = admin.Password;
         }
     }
 }
