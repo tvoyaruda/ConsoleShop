@@ -1,6 +1,6 @@
 ﻿using System;
-using Data;
-using Entities;
+using Infrastructure;
+using Domain;
 using BLL;
 using PL;
 

@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Data;
-using Entities;
+using Infrastructure;
+using Domain;
 using BLL;
 
 namespace PL
 {
     public interface IOperations
     {
-        void SetUser(AccountEntity user);
-        bool ShowAvailableOperations();
+        bool ShowAvailableOperations(UserEntity user, out bool continueApp);
     }
 }

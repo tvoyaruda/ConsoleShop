@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Infrastructure</name>
+    </assembly>
+    <members>
+        <member name="T:Infrastructure.ListContext`1">
+            <summary>
+              <br />
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+    </members>
+</doc>

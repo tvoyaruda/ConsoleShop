@@ -3,22 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Data;
-using Entities;
+using Infrastructure;
+using Domain;
 using BLL;
 
 namespace PL
 {
-    public class CustomerOperations : BaseOperations<CustomerService>
+    public class CustomerOperations : BaseOperations
     {
-        public CustomerOperations() : base() 
+        public CustomerOperations(ListDataContext context) : base(context)
         {
-            _userService = new CustomerService();
         }
 
-        public override bool ShowAvailableOperations(IRepository dataContext, ref IOperations operations)
+        public override bool ShowAvailableOperations(UserEntity user, out bool continueApp)
         {
-
             Console.WriteLine("\n\nCustomer");
             Console.WriteLine($"Hello {currentUser.Name}!");
             Console.WriteLine($"Enter 0 for exit");
@@ -30,33 +28,35 @@ namespace PL
             Console.WriteLine("6. Receive an order");
             Console.WriteLine("7. Change info");
             Console.WriteLine("8. Log Out");
+            continueApp = true;
             switch (int.Parse(Console.ReadLine()))
             {
                 case 0:
-                    return false;
+                    continueApp = false;
+                    break;
                 case 1:
-                    ShowProducts(dataContext);
+                    ShowProducts();
                     break;
                 case 2:
-                    FindProduct(dataContext);
+                    FindProduct();
                     break;
                 case 3:
-                    ShowOrders(dataContext);
+                    ShowOrders();
                     break;
                 case 4:
-                    CreateNewOrder(dataContext);
+                    CreateNewOrder();
                     break;
                 case 5:
-                    UpdateOrderStateAsCanceled(dataContext);
+                    UpdateOrderStateAsCanceled();
                     break;
                 case 6:
-                    UpdateOrderStateAsReceived(dataContext);
+                    UpdateOrderStateAsReceived();
                     break;
                 case 7:
-                    ChangeInfo(dataContext);
+                    ChangeInfo();
                     break;
                 case 8:
-                    operations = LogOut();
+                    LogOut();
                     break;
                 default:
                     break;
@@ -64,71 +64,70 @@ namespace PL
             return true;
         }
 
-        private void ShowOrders(IRepository dataContext)
+        private void ShowOrders()
         {
             Console.WriteLine("Your orders:");
-            foreach (var o in _userService.GetAllCustomerOrders(currentUser.Id, dataContext))
+            foreach (var o in orderController.GetAllCustomerOrders(currentUser.Id))
             {
                 Console.WriteLine(o);
             }
         }
 
-        private IOperations LogOut()
+        private void LogOut()
         {
             currentUser = null;
-            return OperationsSelector.GetOperations(currentUser.Role);
         }
 
-        private void CreateNewOrder(IRepository dataContext)
+        private void CreateNewOrder()
         {
-            ShowProducts(dataContext);
+            ShowProducts();
             Console.WriteLine("Enter product id");
             int prodId = int.Parse(Console.ReadLine());
-            if(_userService.CreateOrder(currentUser.Id, prodId, dataContext))
+            if(orderController.CreateOrder(currentUser.Id, prodId, productController, userController))
             {
                 Console.WriteLine("Order created!");
-                ShowOrders(dataContext);
+                ShowOrders();
             }
             else
                 Console.WriteLine("Wrong product id! Try to order again");
         }
 
-        private void ShowProducts(IRepository dataContext)
+        private void ShowProducts()
         {
-            foreach (var p in _userService.GetAllProducts(dataContext))
+            foreach (var p in productController.GetAllProducts())
                 Console.WriteLine(p);
         }
 
 
-        private void UpdateOrderStateAsCanceled(IRepository dataContext)
+        private void UpdateOrderStateAsCanceled()
         {
-            ShowOrders(dataContext);
+            ShowOrders();
             Console.WriteLine("Enter order id to cancel it");
             int orderId = int.Parse(Console.ReadLine());
-            if (_userService.UpdateOrderStateAsCanceled(orderId, currentUser.Id, dataContext))
+            if (orderController.UpdateOrderState(orderId, currentUser.Id, (int)OrderState.CanceledByUser))
             {
                 Console.WriteLine("Order canceled!");
-                ShowOrders(dataContext);
+                ShowOrders();
             }
             else
                 Console.WriteLine("This order can't be canceled");
         }
 
-        private void UpdateOrderStateAsReceived(IRepository dataContext)
+        private void UpdateOrderStateAsReceived()
         {
-            ShowOrders(dataContext);
+            ShowOrders();
             Console.WriteLine("Enter order id to receive it");
             int orderId = int.Parse(Console.ReadLine());
-            if (_userService.UpdateOrderStateAsReceived(orderId, currentUser.Id, dataContext))
+            if (orderController.UpdateOrderState(orderId, currentUser.Id, (int)OrderState.Received))
             {
                 Console.WriteLine("Order received!");
-                ShowOrders(dataContext);
+                ShowOrders();
             }
             else
                 Console.WriteLine("This order can't be received");
         }
 
-        private void ChangeInfo(IRepository dataContext)
+        private void ChangeInfo()
         {
             Console.WriteLine("Your actual information:");
             Console.WriteLine($"1. Name: {currentUser.Name}");
@@ -163,7 +162,7 @@ namespace PL
                 default:
                     break;
             }
-            if(_userService.UpdateCustomerInfo((CustomerEntity)currentUser, dataContext))
+            if(userController.UpdateCustomerInfo((CustomerEntity)currentUser))
                 Console.WriteLine("Change saved!");
             else
                 Console.WriteLine("Some problem. Try again");

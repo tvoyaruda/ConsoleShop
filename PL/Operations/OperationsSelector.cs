@@ -3,26 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Data;
-using Entities;
+using Infrastructure;
+using Domain;
 using BLL;
 
 namespace PL
 {
     public static class OperationsSelector
     {
-        private static Dictionary<UserRoles, IOperations> keyValuePairs = new Dictionary<UserRoles, IOperations>
+
+        private static Dictionary<UserRoles, Type> keyValuePairs = new Dictionary<UserRoles, Type>
         {
-            {UserRoles.Customer, new CustomerOperations() },
-            {UserRoles.Admin, new AdminOperations() }
+            {UserRoles.Customer, typeof(CustomerOperations)},
+            {UserRoles.Admin, typeof(AdminOperations)}
         };
 
-        public static IOperations GetOperations(UserRoles userRole)
-        {
-            if(keyValuePairs.ContainsKey(userRole))
-                return keyValuePairs[userRole];
-            else
-                return new GuestOperations();
-        }
+        public static Type GetOperations(UserEntity user)
+            => keyValuePairs.TryGetValue(user.Role, out var value) ? value : typeof(GuestOperations);
     }
 }

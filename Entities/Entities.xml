@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Domain</name>
+    </assembly>
+    <members>
+        <member name="T:Domain.Entity">
+            <summary>
+            Description basic entity that has only Id field
+            </summary>
+        </member>
+        <member name="P:Domain.Entity.Id">
+            <value>
+            The <c>Id</c> property represents an uniq Id for this instance.
+            </value>
+        </member>
+        <member name="T:Domain.IUpdatebly`1">
+            <summary>
+              <br />
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Domain.IUpdatebly`1.Update(`0)">
+            <summary>Updates the specified item.</summary>
+            <param name="item">The item.</param>
+        </member>
+        <member name="T:Domain.UserEntity">
+            <summary>
+              <br />
+            </summary>
+        </member>
+        <member name="P:Domain.UserEntity.Name">
+            <summary>Gets or sets the name.</summary>
+            <value>The name.</value>
+        </member>
+        <member name="T:Domain.AdminEntity">
+            <summary>
+              <para>
+                <br />
+              </para>
+            </summary>
+        </member>
+        <member name="M:Domain.AdminEntity.Update(Domain.AdminEntity)">
+            <summary>Updates the specified item.</summary>
+            <param name="admin"></param>
+        </member>
+        <member name="T:Domain.OrderEntity">
+            <summary>
+              <br />
+            </summary>
+        </member>
+    </members>
+</doc>

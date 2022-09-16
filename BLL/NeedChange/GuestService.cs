@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Data;
-using Entities;
-
+using Infrastructure;
+using Domain;
+/*
 namespace BLL
 {
     public class GuestService : BaseService
@@ -17,10 +17,11 @@ namespace BLL
             context.AddCustomer(newAccount);
             return true;
         }
-        public AccountEntity LogIn(string email, string password, IRepository context)
+        public UserEntity LogIn(string email, string password, IRepository context)
         {
-            return (AccountEntity) context.GetAdminByEmailAndPass(email, password) ??
+            return (UserEntity) context.GetAdminByEmailAndPass(email, password) ??
                 context.GetCustomerByEmailAndPass(email, password);
         }
     }
 }
+*/

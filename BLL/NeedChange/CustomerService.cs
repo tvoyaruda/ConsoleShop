@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Data;
-using Entities;
-
+using Infrastructure;
+using Domain;
+/*
 namespace BLL
 {
     public class CustomerService: BaseService
@@ -58,7 +58,7 @@ namespace BLL
 
         public bool UpdateCustomerInfo(CustomerEntity customer, IRepository context)
         {
-            AccountEntity findCustomer = context.GetCustomerById(customer.Id);
+            UserEntity findCustomer = context.GetCustomerById(customer.Id);
             if (findCustomer == null)
                 return false;
             context.UpdateCustomer(customer);
@@ -66,3 +66,4 @@ namespace BLL
         }
     }
 }
+*/

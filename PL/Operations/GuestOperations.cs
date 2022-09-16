@@ -1,49 +1,50 @@
-﻿using Entities;
+﻿using Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Data;
+using Infrastructure;
 using BLL;
 
 
 namespace PL
 {
-    public class GuestOperations : BaseOperations<GuestService>
+    public class GuestOperations : BaseOperations
     {
-        public GuestOperations() : base() 
+        public Dictionary<int, Action> Operations;
+
+        public GuestOperations(ListDataContext context) : base(context)
         {
-            _userService = new GuestService();
+            Operations = new Dictionary<int, Action>();
+            Operations.Add(1, SignUp);
+            Operations.Add(2, FindProduct);
+            Operations.Add(3, LogIn);
         }
 
-        public override bool ShowAvailableOperations(IRepository dataContext,ref IOperations operations)
+        public override bool ShowAvailableOperations(UserEntity user, out bool continueApp)
         {
             Console.WriteLine("\n\nGuest");
             Console.WriteLine($"Enter 0 for exit");
-            Console.WriteLine("1. Sign in");
+            Console.WriteLine("1. Sign up");
             Console.WriteLine("2. Find prod");
             Console.WriteLine("3. Log in");
-            switch (int.Parse(Console.ReadLine()))
+            continueApp = true;
+            Action action;
+            int command;
+            while (continueApp)
             {
-                case 0:
-                    return false;
-                case 1:
-                    operations = SignUp(dataContext);
-                    break;
-                case 2:
-                    FindProduct(dataContext);
-                    break;
-                case 3:
-                    operations = LogIn(dataContext);
-                    break;
-                default:
-                    break;
+                int.TryParse(Console.ReadLine(), out command);
+                if(command == 0)
+                    continueApp = false;
+                Operations.TryGetValue(command, out action);
+                if (action != null)
+                    action.Invoke();
             }
             return true;
         }
 
-        private IOperations SignUp(IRepository dataContext)
+        private void SignUp()
         {
             Console.WriteLine("Input your email");
             string email = Console.ReadLine();
@@ -68,7 +69,7 @@ namespace PL
                 Password = password
             };
 
-            if (_userService.CreateCustomer(newUser, dataContext))
+            if (userController.CreateCustomer(newUser))
             {
                 Console.WriteLine("User added!");
                 currentUser = newUser;
@@ -78,21 +79,15 @@ namespace PL
                 Console.WriteLine("Something went wrong..Try again");
                 currentUser = null;
             }
-            IOperations newOperations = OperationsSelector.GetOperations(currentUser.Role);
-            newOperations.SetUser(currentUser);
-            return newOperations;
         }
 
-        private IOperations LogIn(IRepository dataContext)
+        private void LogIn()
         {
             Console.WriteLine("Input your email");
             string email = Console.ReadLine();
             Console.WriteLine("Input your password");
             string password = Console.ReadLine();
-            currentUser = _userService.LogIn(email, password, dataContext);
-            IOperations newOperations = OperationsSelector.GetOperations(currentUser.Role);
-            newOperations.SetUser(currentUser);
-            return newOperations;
+            currentUser = userController.LogIn(email, password);
         }
     }
 }

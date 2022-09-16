@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Data;
-using Entities;
-
+using Infrastructure;
+using Domain;
+/*
 namespace BLL
 {
     public abstract class BaseService
     {
-        private ProductService productService;
+        private ProductController productService;
 
         
     }
-}
+}*/

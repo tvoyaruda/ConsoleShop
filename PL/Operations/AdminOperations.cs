@@ -3,20 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Data;
-using Entities;
+using Infrastructure;
+using Domain;
 using BLL;
 
 namespace PL
 {
-    class AdminOperations : BaseOperations<AdminService>
+    class AdminOperations : BaseOperations
     {
-        public AdminOperations() : base() 
+        public AdminOperations(ListDataContext context) : base(context) 
         {
-            _userService = new AdminService();
         }
 
-        public override bool ShowAvailableOperations(IRepository dataContext, ref IOperations operations)
+        public override bool ShowAvailableOperations(UserEntity user, out bool continueApp)
         {
             Console.WriteLine("\n\nAdmin");
             Console.WriteLine($"Hello {currentUser.Name}!");
@@ -31,39 +30,41 @@ namespace PL
             Console.WriteLine("8. Add new product");
             Console.WriteLine("9. Change product info");
             Console.WriteLine("10. Log Out");
+            continueApp = true;
             switch (int.Parse(Console.ReadLine()))
             {
                 case 0:
-                    return false;
+                    continueApp = false;
+                    break;
                 case 1:
-                    ShowProducts(dataContext);
+                    ShowProducts();
                     break;
                 case 2:
-                    FindProduct(dataContext);
+                    FindProduct();
                     break;
                 case 3:
-                    ShowOrders(dataContext);
+                    ShowOrders();
                     break;
                 case 4:
-                    CreateNewOrder(dataContext);
+                    CreateNewOrder();
                     break;
                 case 5:
-                    UpdateOrderState(dataContext);
+                    UpdateOrderState();
                     break;
                 case 6:
-                    ShowCustomers(dataContext);
+                    ShowCustomers();
                     break;
                 case 7:
-                    ChangeInfo(dataContext);
+                    ChangeInfo();
                     break;
                 case 8:
-                    CreateProduct(dataContext);
+                    CreateProduct();
                     break;
                 case 9:
-                    UpdateProductInfo(dataContext);
+                    UpdateProductInfo();
                     break;
                 case 10:
-                    operations = LogOut();
+                    LogOut();
                     break;
                 default:
                     break;
@@ -71,64 +72,63 @@ namespace PL
             return true;
         }
 
-        private void ShowOrders(IRepository dataContext)
+        private void ShowOrders()
         {
             Console.WriteLine("All orders:");
-            foreach (var o in _userService.GetAllOrders(dataContext))
+            foreach (var o in orderController.GetAllOrders())
             {
                 Console.WriteLine(o);
             }
         }
 
-        private void ShowProducts(IRepository dataContext)
+        private void ShowProducts()
         {
             Console.WriteLine("All products:");
-            foreach (var p in _userService.GetAllProducts(dataContext))
+            foreach (var p in productController.GetAllProducts())
                 Console.WriteLine(p);
         }
 
-        private void ShowCustomers(IRepository dataContext)
+        private void ShowCustomers()
         {
             Console.WriteLine("All customers:");
-            foreach (var p in _userService.GetAllCustomers(dataContext))
+            foreach (var p in userController.GetAllCustomers())
                 Console.WriteLine(p);
         }
 
-        private IOperations LogOut()
+        private void LogOut()
         {
             currentUser = null;
-            return OperationsSelector.GetOperations(currentUser.Role);
         }
 
-        private void CreateNewOrder(IRepository dataContext)
+        private void CreateNewOrder()
         {
-            ShowProducts(dataContext);
+            ShowProducts();
             Console.WriteLine("Enter product id");
             int prodId = int.Parse(Console.ReadLine());
-            ShowCustomers(dataContext);
+            ShowCustomers();
             Console.WriteLine("Enter customer id");
             int custId = int.Parse(Console.ReadLine());
-            if (_userService.CreateOrder(custId, prodId, dataContext))
+            if (orderController.CreateOrder(custId, prodId, productController, userController))
             {
                 Console.WriteLine("Order created!");
-                ShowOrders(dataContext);
+                ShowOrders();
             }
             else
                 Console.WriteLine("Wrong product id! Try to order again");
         }
 
-        private void UpdateOrderState(IRepository dataContext)
+        private void UpdateOrderState()
         {
-            ShowOrders(dataContext);
+            ShowOrders();
             Console.WriteLine("Enter order id to change its state:");
             int orderId = int.Parse(Console.ReadLine());
             OrderStates();
             Console.WriteLine("Enter order state id:");
             int orderState = int.Parse(Console.ReadLine()) + 1;
-            if (_userService.UpdateOrderState(orderId, orderState, dataContext))
+            if (orderController.UpdateOrderState(orderId, currentUser.Id, orderState))
             {
                 Console.WriteLine("Order state changed!");
-                ShowOrders(dataContext);
+                ShowOrders();
             }
             else
                 Console.WriteLine("This order can't be changed!");
@@ -145,10 +145,10 @@ namespace PL
         }
 
 
-        private void ChangeInfo(IRepository dataContext)
+        private void ChangeInfo()
         {
-            AccountEntity customer = new CustomerEntity();
-            ShowCustomers(dataContext);
+            UserEntity customer = new CustomerEntity();
+            ShowCustomers();
             Console.WriteLine("Enter customer id");
             customer.Id = int.Parse(Console.ReadLine());
             Console.WriteLine($"1. Name");
@@ -182,16 +182,16 @@ namespace PL
                 default:
                     break;
             }
-            if (_userService.UpdateCustomerInfo((CustomerEntity)customer, dataContext))
+            if (userController.UpdateCustomerInfo((CustomerEntity)customer))
                 Console.WriteLine("Change saved!");
             else
                 Console.WriteLine("Some problem. Try again");
         }
 
-        private void UpdateProductInfo(IRepository dataContext)
+        private void UpdateProductInfo()
         {
             ProductEntity product = new ProductEntity();
-            ShowProducts(dataContext);
+            ShowProducts();
             Console.WriteLine("Enter product id");
             product.Id = int.Parse(Console.ReadLine());
             Console.WriteLine($"1. Name");
@@ -218,23 +218,23 @@ namespace PL
                 default:
                     break;
             }
-            if (_userService.UpdateProductInfo(product, dataContext))
+            if (productController.UpdateProductInfo(product))
                 Console.WriteLine("Change saved!");
             else
                 Console.WriteLine("Some problem. Try again");
         }
 
-        private void CreateProduct(IRepository dataContext)
+        private void CreateProduct()
         {
             ProductEntity product = new ProductEntity();
-            ShowProducts(dataContext);
+            ShowProducts();
             Console.WriteLine("Enter product name:");
             product.Name = Console.ReadLine();
             Console.WriteLine("Enter product category:");
             product.Category = Console.ReadLine();
             Console.WriteLine("Enter product price:");
             product.Price = decimal.Parse(Console.ReadLine());
-            if (_userService.CreateProduct(product, dataContext))
+            if (productController.CreateProduct(product))
                 Console.WriteLine("Product added!");
             else
                 Console.WriteLine("Something went wrong..Try again");
